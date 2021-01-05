@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Disable the beep
+# xset -b
