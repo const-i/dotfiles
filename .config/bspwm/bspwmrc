@@ -19,4 +19,5 @@ bspc rule -a Screenkey manage=off
 
 # Autostart programs
 
-exec urxvt
+dunst &
+urxvt &
