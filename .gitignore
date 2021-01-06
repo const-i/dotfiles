@@ -1,0 +1,5 @@
+# TMP file
+*.tmp
+
+# Test Script in Bin
+bin/test.sh
