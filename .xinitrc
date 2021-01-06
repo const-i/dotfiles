@@ -9,8 +9,8 @@
 # Source the Xresources
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
-
-#exec i3
-exec bspwm
-#exec awesome
-#exec startxfce4
+if [[ $(tty) = /dev/tty1 ]]; then 
+    exec bspwm
+elif [[ $(tty) = /dev/tty2 ]]; then
+    exec startxfce4
+fi

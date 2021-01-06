@@ -1,3 +1,7 @@
-if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
-    exec startx
+#!/bin/sh
+
+if [[ -z $DISPLAY ]]; then
+    if [[ $(tty) = /dev/tty1 ]] || [[ $(tty) = /dev/tty2 ]]; then
+        exec startx
+    fi
 fi
