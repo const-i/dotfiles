@@ -21,6 +21,7 @@ echo "Battery status: $BATTERY_STATUS"
 export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 export DISPLAY=:0
 
+
 [ -f "/home/srideep/bin/.battery_notify.tmp" ] && TMP_STATUS=$(cat /home/srideep/bin/.battery_notify.tmp) || TMP_STATUS=""
 
 
@@ -29,7 +30,7 @@ if [ "$BATTERY_STATUS" = "Full" ]; then
     # Notify if we havent
     if [ "$TMP_STATUS" != "FULL" ]; then
         echo "FULL" > /home/srideep/bin/.battery_notify.tmp
-        /usr/bin/notify-send "Battery Full" "Battery level: $BATTERY_LEVEL"
+        /usr/bin/notify-send "Battery Full" "Battery level: $BATTERY_LEVEL" --icon=battery-level-100-charged-symbolic.symbolic
     fi
     exit 0
 fi
@@ -39,34 +40,40 @@ if [ "$BATTERY_STATUS" = "Charging" ]; then
     # Notify if we havent
     if [ "$TMP_STATUS" != "CHARGING" ]; then
         echo "CHARGING" > /home/srideep/bin/.battery_notify.tmp
-        /usr/bin/notify-send "Battery Charging" "Battery level: $BATTERY_LEVEL"
+        /usr/bin/notify-send "Battery Charging" "Battery level: $BATTERY_LEVEL" --icon=battery-level-50-charging-symbolic.symbolic
     fi
     exit 0
 fi
 
 
+# At this point the battery is not full or charging.
+# Hence we notify based on the battery levels
 
+# Critical Level
 if [ $BATTERY_LEVEL -lt $LEVEL_CRITICAL ]; then
-    if [ "$TMP_STATUS" = "CRITICAL" ]; then
-        exit 0
-    else
+    if [ "$TMP_STATUS" != "CRITICAL" ]; then
         echo "CRITICAL" > /home/srideep/bin/.battery_notify.tmp
-        /usr/bin/notify-send "Battery Level Critical" "Battery level: $BATTERY_LEVEL.\nShutting down in 5 mins"
+        /usr/bin/notify-send "Battery Level Critical" "Battery level: $BATTERY_LEVEL.\nShutting down in 5 mins" --icon=battery-level-10-symbolic.symbolic
         /usr/bin/shutdown +5
     fi
-elif [ $BATTERY_LEVEL -lt $LEVEL_WARN ]; then
-    if [ "$TMP_STATUS" = "WARN" ]; then
-        exit 0
-    else
+    exit 0
+fi
+
+# Warn level
+if [ $BATTERY_LEVEL -lt $LEVEL_WARN ]; then
+    if [ "$TMP_STATUS" != "WARN" ]; then
         echo "WARN" > /home/srideep/bin/.battery_notify.tmp
-        /usr/bin/notify-send "Battery Level Warning" "Battery level: $BATTERY_LEVEL"
+        /usr/bin/notify-send "Battery Level Warning" "Battery level: $BATTERY_LEVEL" --icon=battery-level-50-symbolic.symbolic
     fi
-elif [ $BATTERY_LEVEL -lt $LEVEL_NOTIFY ]; then 
-    if [ "$TMP_STATUS" = "NOTIFY" ]; then
-        exit 0
-    else
+    exit 0
+fi
+
+# Notify level
+if [ $BATTERY_LEVEL -lt $LEVEL_NOTIFY ]; then 
+    if [ "$TMP_STATUS" != "NOTIFY" ]; then
         echo "NOTIFY" > /home/srideep/bin/.battery_notify.tmp
-        /usr/bin/notify-send "Battery Level Notification" "Battery level: $BATTERY_LEVEL"
+        /usr/bin/notify-send "Battery Level Notification" "Battery level: $BATTERY_LEVEL" --icon=battery-level-80-symbolic.symbolic
     fi
+    exit 0
 fi
 
