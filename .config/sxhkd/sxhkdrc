@@ -120,6 +120,11 @@ super + alt + shift + {h,j,k,l}
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
+
+# Move to another workspace
+super + shift + {Left, Right}
+        id=$(bspc query --nodes --node); bspc node --to-desktop {prev,next};
+
 #
 # Applications
 #
